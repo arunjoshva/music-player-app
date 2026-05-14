@@ -1,8 +1,10 @@
+import Player from "./components/Player";
+
 function App() {
   
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Music Player App</h1>
+    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-zinc-800 flex items-center justify-center">
+      <Player />
     </div>
   )
 }
