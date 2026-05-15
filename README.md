@@ -52,6 +52,8 @@ This project follows a professional Git workflow using:
 * feature/volume-control
 * feature/ui-polish
 
+Feature branches were merged into the main branch using pull requests and deleted after successful merge.
+
 ---
 
 ## Key Learning Concepts
