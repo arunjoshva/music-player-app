@@ -132,13 +132,13 @@ const Player = () => {
     };
 
     return(
-        <div className="w-87.5 bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 shadow-2xl">
+        <div className="w-full max-w-95 bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-4 m-4 sm:p-6 shadow-2xl">
 
             {/* Audio Element */}
             <audio ref={audioRef} src={currentSong.audioSrc} ></audio>
 
             {/* Album Image */}
-            <img src={currentSong.imageSrc} alt={currentSong.title} className="w-full h-72 object-cover rounded-2xl" />
+            <img src={currentSong.imageSrc} alt={currentSong.title} className={`w-full h-75 object-cover rounded-2xl transition-transform duration-500 ${isPlaying ? "scale-102" : "scale-100"}`} />
 
             {/* Song Info */}
             <div className="mt-6 text-center">
@@ -149,17 +149,17 @@ const Player = () => {
             {/* Controls */}
             <div className="flex items-center justify-center gap-6 mt-8">
 
-                <button onClick={handlePrevious} className="hover:scale-110 transition cursor-pointer hover:text-white"><SkipBack size={30} /></button>
+                <button onClick={handlePrevious} className="text-white hover:text-zinc-300 hover:scale-125 active:scale-95 transition-all duration-200 cursor-pointer "><SkipBack size={30} /></button>
 
-                <button onClick={handlePlayPause} className="bg-white text-black p-4 rounded-full hover:scale-110 transition cursor-pointer">{isPlaying ? (<Pause size={32} />) : (<Play size={32} fill="black" />)}</button>
+                <button onClick={handlePlayPause} className="bg-white text-black p-4 rounded-full hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer shadow-lg">{isPlaying ? (<Pause size={32} />) : (<Play size={32} fill="black" />)}</button>
 
-                <button onClick={handleNext} className="hover:scale-110 transition cursor-pointer hover:text-white"><SkipForward size={30} /></button>
+                <button onClick={handleNext} className="text-white hover:text-zinc-300 hover:scale-125 active:scale-95 transition-all duration-200 cursor-pointer hover:text-white"><SkipForward size={30} /></button>
             </div>
 
             {/* Progress Bar */}
             <div className="mt-6">
 
-                <input type="range" min="0" max={duration || 0} value={currentTime} onChange={handleSeek} className="w-full cursor-pointer" />
+                <input type="range" min="0" max={duration || 0} value={currentTime} onChange={handleSeek} className="w-full cursor-pointer accent-white" />
 
                 <div className="flex justify-between text-sm text-zinc-300 mt-2">
 
@@ -174,22 +174,22 @@ const Player = () => {
             {/* Volume Control */}
             <div className="flex items-center gap-4 mt-6">
 
-                <button onClick={handleMuteToggle} className="hover:scale-110 transition text-white">
+                <button onClick={handleMuteToggle} className="hover:scale-110 transition text-white cursor-pointer">
 
                     {isMuted || volume ===0 ? (<VolumeX size={24} />) : (<Volume2 size={24} />)}
 
                 </button>
 
-                <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={handleVolumeChange} className="w-full cursor-pointer" />
+                <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={handleVolumeChange} className="w-full cursor-pointer accent-white" />
 
             </div>
 
             {/* Playlist */}
-            <div className="mt-8 space-y-3">
+            <div className="mt-8 flex flex-col gap-3 max-h-62.5 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
                 {songs.map((song, index) => (
                     <div key={index} onClick={() => handleSelectSong(index)} className={`flex items-center gap-4 p-3 rounded-xl cursor-pointer transition
                         
-                        ${currentSongIndex === index ? "bg-white text-black" : "bg-white/10 hover:bg-white/20"}
+                        ${currentSongIndex === index ? "bg-white text-black" : "bg-white/10 hover:bg-white/20 hover:translate-x-1"}
                     `}>
 
                         <img src={song.imageSrc} alt={song.title} className="w-14 h-14 rounded-lg object-cover" />
