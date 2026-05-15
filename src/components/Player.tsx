@@ -1,4 +1,4 @@
-import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { songs } from "../data/songs";
 import { useEffect, useRef, useState } from "react";
 
@@ -11,6 +11,10 @@ const Player = () => {
     const [currentTime, setCurrentTime] = useState(0);
 
     const [duration, setDuration] = useState(0);
+
+    const [volume, setVolume] = useState(1);
+
+    const [isMuted, setIsMuted] = useState(false);
 
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -64,6 +68,14 @@ const Player = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const audio = audioRef.current;
+
+        if(!audio) return;
+
+        audio.volume = isMuted ? 0 : volume;
+    }, [volume, isMuted]);
+
     const handlePlayPause = () => {
         setIsPlaying(prev => !prev);
     };
@@ -107,6 +119,18 @@ const Player = () => {
             setCurrentTime(newTime);
         };
 
+    const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newVolume = Number(e.target.value);
+
+        setVolume(newVolume);
+
+        setIsMuted(false);
+    };
+
+    const handleMuteToggle = () => {
+        setIsMuted(prev => !prev);
+    };
+
     return(
         <div className="w-87.5 bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 shadow-2xl">
 
@@ -125,11 +149,11 @@ const Player = () => {
             {/* Controls */}
             <div className="flex items-center justify-center gap-6 mt-8">
 
-                <button onClick={handlePrevious} className="hover:scale-110 transition cursor-pointer"><SkipBack size={30} /></button>
+                <button onClick={handlePrevious} className="hover:scale-110 transition cursor-pointer hover:text-white"><SkipBack size={30} /></button>
 
                 <button onClick={handlePlayPause} className="bg-white text-black p-4 rounded-full hover:scale-110 transition cursor-pointer">{isPlaying ? (<Pause size={32} />) : (<Play size={32} fill="black" />)}</button>
 
-                <button onClick={handleNext} className="hover:scale-110 transition cursor-pointer"><SkipForward size={30} /></button>
+                <button onClick={handleNext} className="hover:scale-110 transition cursor-pointer hover:text-white"><SkipForward size={30} /></button>
             </div>
 
             {/* Progress Bar */}
@@ -141,11 +165,22 @@ const Player = () => {
 
                     <span>{formatTime(currentTime)}</span>
 
-                    <span>{formatTime(duration)}</span>
-        
+                    <span>{formatTime(duration)}</span>        
 
                 </div>
 
+            </div>
+
+            {/* Volume Control */}
+            <div className="flex items-center gap-4 mt-6">
+
+                <button onClick={handleMuteToggle} className="hover:scale-110 transition text-white">
+
+                    {isMuted || volume ===0 ? (<VolumeX size={24} />) : (<Volume2 size={24} />)}
+
+                </button>
+
+                <input type="range" min="0" max="1" step="0.1" value={isMuted ? 0 : volume} onChange={handleVolumeChange} className="w-full cursor-pointer" />
 
             </div>
 
