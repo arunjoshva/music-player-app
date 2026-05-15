@@ -43,7 +43,7 @@ This project follows a professional Git workflow using:
 * Meaningful commit messages
 * GitHub merge workflow
 
-### Example Feature Branches
+### Feature Branch Workflow Used
 
 * feature/player-ui
 * feature/audio-playback
