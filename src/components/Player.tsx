@@ -134,11 +134,16 @@ const Player = () => {
     return(
         <div className="w-full max-w-95 bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-4 m-4 sm:p-6 shadow-2xl">
 
+            {/* Player Title */}
+            <div className="text-center mb-6">
+                <h1 className="text-3xl font-bold bg-linear-to-r from-purple-400 to-purple-500 bg-clip-text text-transparent tracking-wide">Jose Music Player</h1>
+            </div>
+
             {/* Audio Element */}
             <audio ref={audioRef} src={currentSong.audioSrc} ></audio>
 
             {/* Album Image */}
-            <img src={currentSong.imageSrc} alt={currentSong.title} className={`w-full h-75 object-cover rounded-2xl transition-transform duration-500 ${isPlaying ? "scale-102" : "scale-100"}`} />
+            <img src={currentSong.imageSrc} alt={currentSong.title} className={`w-full h-75 object-cover rounded-2xl transition-transform duration-500 mt-6 ${isPlaying ? "scale-102" : "scale-100"}`} />
 
             {/* Song Info */}
             <div className="mt-6 text-center">
