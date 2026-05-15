@@ -8,19 +8,61 @@ const Player = () => {
 
     const [isPlaying, setIsPlaying] = useState(false);
 
+    const [currentTime, setCurrentTime] = useState(0);
+
+    const [duration, setDuration] = useState(0);
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const currentSong = songs[currentSongIndex];
+    const currentSong = songs[currentSongIndex];    
 
     useEffect(() => {
-        if (!audioRef.current) return;
+
+        const audio = audioRef.current;
+        
+        if (!audio) return;
+
+        const updateTime = () => {
+            setCurrentTime(audio.currentTime);
+        };
+
+        const updateDuration = () => {
+            setDuration(audio.duration);
+        };
+
+        audio.addEventListener("timeupdate", updateTime);
+
+        audio.addEventListener("loadedmetadata", updateDuration);        
 
         if (isPlaying) {
-            audioRef.current.play();
+            audio.play();
         } else {
-            audioRef.current.pause();
-        }
+            audio.pause();
+        }        
+
+        return () => {
+            audio.removeEventListener("timeupdate", updateTime);
+
+            audio.removeEventListener("loadedmetadata", updateDuration);
+        };
+
     }, [isPlaying, currentSongIndex]);
+
+    useEffect(() => {
+        const audio = audioRef.current;
+
+        if(!audio) return;
+
+        const handleEnded = () => {
+            setCurrentSongIndex((prev) => prev === songs.length - 1 ? 0 : prev + 1);
+        };
+
+        audio.addEventListener("ended", handleEnded);
+
+        return () => {
+            audio.removeEventListener("ended", handleEnded);
+        };
+    }, []);
 
     const handlePlayPause = () => {
         setIsPlaying(prev => !prev);
@@ -28,16 +70,42 @@ const Player = () => {
 
     const handleNext = () => {
         setCurrentSongIndex((prev) => prev === songs.length - 1 ? 0 : prev + 1);
+        setCurrentTime(0);
     };
 
     const handlePrevious = () => {
         setCurrentSongIndex((prev) => prev === 0 ? songs.length - 1 : prev - 1);
+        setCurrentTime(0);
     };
 
     const handleSelectSong = (index: number) => {
         setCurrentSongIndex(index);
         setIsPlaying(true);
     };
+
+    const formatTime = (time: number) => {
+
+            if(isNaN(time)) return "0:00";
+
+            const minutes = Math.floor(time / 60);
+
+            const seconds = Math.floor(time % 60);
+
+            return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+        };
+
+    const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+            const newTime = Number(e.target.value);
+
+            const audio = audioRef.current;
+
+            if(!audio) return;
+
+            audio.currentTime = newTime;
+
+            setCurrentTime(newTime);
+        };
 
     return(
         <div className="w-87.5 bg-white/10 backdrop-blur-lg border border-white/10 rounded-3xl p-6 shadow-2xl">
@@ -62,6 +130,23 @@ const Player = () => {
                 <button onClick={handlePlayPause} className="bg-white text-black p-4 rounded-full hover:scale-110 transition cursor-pointer">{isPlaying ? (<Pause size={32} />) : (<Play size={32} fill="black" />)}</button>
 
                 <button onClick={handleNext} className="hover:scale-110 transition cursor-pointer"><SkipForward size={30} /></button>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="mt-6">
+
+                <input type="range" min="0" max={duration || 0} value={currentTime} onChange={handleSeek} className="w-full cursor-pointer" />
+
+                <div className="flex justify-between text-sm text-zinc-300 mt-2">
+
+                    <span>{formatTime(currentTime)}</span>
+
+                    <span>{formatTime(duration)}</span>
+        
+
+                </div>
+
+
             </div>
 
             {/* Playlist */}
